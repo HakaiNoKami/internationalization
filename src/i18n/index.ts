@@ -3,7 +3,7 @@ import languageDetector, {
   CustomDetector,
 } from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
-import { languages } from "../consts";
+import { i18nLanguage, languages } from "../consts";
 
 const CommonPT = require("./pt/common.json");
 const CommonEN = require("./en/common.json");
@@ -42,9 +42,10 @@ const languagePathDetector: CustomDetector = {
   lookup() {
     const path = window.location.pathname;
     const firstItemPath = path?.split("/")?.[0 || 1];
+    const defaultLanguage = window.localStorage.getItem(i18nLanguage) || "";
     return languages.some((language) => language === firstItemPath)
       ? firstItemPath
-      : languages[0];
+      : defaultLanguage;
   },
 };
 
@@ -62,6 +63,7 @@ i18next
     fallbackLng: languages,
     detection: {
       order: ["languagePathDetector"],
+      lookupLocalStorage: i18nLanguage,
     },
     interpolation: {
       escapeValue: false,
